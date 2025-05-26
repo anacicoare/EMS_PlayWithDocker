@@ -1,0 +1,146 @@
+_format_version: "2.1"
+
+services:
+  - name: business-service
+    url: http://business-module:8002
+    routes:
+      - name: business-route
+        paths:
+          - /api/business
+        strip_path: false
+        path_handling: v0
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "*"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+          headers:
+            - Content-Type
+            - Authorization
+          max_age: 3600
+      - name: request-transformer
+        config:
+          replace:
+            headers:
+              - "host:localhost"
+
+  - name: payments-service
+    url: http://payments-module:8003
+    routes:
+      - name: payments-route
+        paths:
+          - /api/payments
+        strip_path: false
+        path_handling: v0
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "*"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+          headers:
+            - Content-Type
+            - Authorization
+          max_age: 3600
+      - name: request-transformer
+        config:
+          replace:
+            headers:
+              - "host:localhost"
+
+  - name: tasks-service
+    url: http://tasks-module:8004
+    routes:
+      - name: tasks-route
+        paths:
+          - /api/tasks
+        strip_path: false
+        path_handling: v0
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "*"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+          headers:
+            - Content-Type
+            - Authorization
+          max_age: 3600
+      - name: request-transformer
+        config:
+          replace:
+            headers:
+              - "host:localhost"
+
+  - name: teams-service
+    url: http://teams-module:8005
+    routes:
+      - name: teams-route
+        paths:
+          - /api/teams
+          - /api/profile
+          - /api/get_user_colleagues
+          - /api/upload_profile_pic
+          - /api/register
+          - /api/login
+          - /api/all_users
+        strip_path: false
+        path_handling: v0
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - "*"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+            - HEAD
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - Authorization
+            - X-Requested-With
+          exposed_headers:
+            - X-Auth-Token
+          credentials: true
+          max_age: 3600
+      - name: request-transformer
+        config:
+          replace:
+            headers:
+              - "host:localhost"
+
+
+  - name: frontend-service
+    url: http://frontend:4000
+    routes:
+      - name: frontend-route
+        paths:
+          - /
+
+  - name: phpmyadmin-service
+    url: http://phpmyadmin:8080
+    routes:
+      - name: phpmyadmin-route
+        paths:
+          - /phpmyadmin

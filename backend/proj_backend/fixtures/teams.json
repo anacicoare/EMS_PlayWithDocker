@@ -1,0 +1,92 @@
+[
+  {
+    "model": "proj_backend.team",
+    "pk": 1,
+    "fields": {
+      "name": "Frontend Development",
+      "description": "Responsible for building and maintaining user interfaces using React and Next.js",
+      "department": "Engineering",
+      "date_created": "2025-01-01T10:00:00Z",
+      "date_last_modified": "2025-01-01T10:00:00Z"
+    },
+    "m2m_data": {
+      "owner": 1,
+      "members": [1, 2, 3, 4, 5]
+    }
+  },
+  {
+    "model": "proj_backend.team",
+    "pk": 2,
+    "fields": {
+      "name": "Backend Systems",
+      "description": "Developing and scaling our core backend services and APIs",
+      "department": "Engineering",
+      "date_created": "2025-01-02T10:00:00Z",
+      "date_last_modified": "2025-01-02T10:00:00Z"
+    },
+    "m2m_data": {
+        "owner": 1,
+      "members": [6, 7, 8, 9, 10]
+    }
+  },
+  {
+    "model": "proj_backend.team",
+    "pk": 3,
+    "fields": {
+      "name": "Product Design",
+      "description": "Creating user-centered design solutions and maintaining design system",
+      "department": "Design",
+      "date_created": "2025-01-03T10:00:00Z",
+      "date_last_modified": "2025-01-03T10:00:00Z"
+    },
+    "m2m_data": {
+        "owner": 1,
+      "members": [1, 2]
+    }
+  },
+  {
+    "model": "proj_backend.team",
+    "pk": 4,
+    "fields": {
+      "name": "Data Analytics",
+      "description": "Building data pipelines and providing insights for business decisions",
+      "department": "Data",
+      "date_created": "2025-01-04T10:00:00Z",
+      "date_last_modified": "2025-01-04T10:00:00Z"
+    },
+    "m2m_data": {
+        "owner": 1,
+      "members": [3, 4, 5]
+    }
+  },
+  {
+    "model": "proj_backend.team",
+    "pk": 5,
+    "fields": {
+      "name": "Quality Assurance",
+      "description": "Ensuring product quality through automated and manual testing",
+      "department": "Engineering",
+      "date_created": "2025-01-05T10:00:00Z",
+      "date_last_modified": "2025-01-05T10:00:00Z"
+    },
+    "m2m_data": {
+        "owner": 1,
+      "members": [6, 7]
+    }
+  },
+  {
+    "model": "proj_backend.team",
+    "pk": 6,
+    "fields": {
+      "name": "DevOps",
+      "description": "Managing infrastructure and deployment pipelines",
+      "department": "Operations",
+      "date_created": "2025-01-06T10:00:00Z",
+      "date_last_modified": "2025-01-06T10:00:00Z"
+    },
+    "m2m_data": {
+        "owner": 1,
+      "members": [8, 9, 10]
+    }
+  }
+]

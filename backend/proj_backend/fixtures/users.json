@@ -1,0 +1,122 @@
+[
+  {
+    "model": "proj_backend.userdata",
+    "pk": 1,
+    "fields": {
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "manager",
+      "date_joined": "2025-01-04T21:14:06.465067Z"
+    }
+  },
+  {
+    "model": "proj_backend.userdata",
+    "pk": 2,
+    "fields": {
+      "name": "Bob Smith",
+      "email": "bob.smith@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "employee",
+      "date_joined": "2025-01-06T18:00:00.123456Z"
+    }
+  },
+  {
+    "model": "proj_backend.userdata",
+    "pk": 3,
+    "fields": {
+      "name": "Charlie Brown",
+      "email": "charlie.brown@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "employee",
+      "date_joined": "2025-01-08T12:45:30.987654Z"
+    }
+  },
+  {
+    "model": "proj_backend.userdata",
+    "pk": 4,
+    "fields": {
+      "name": "David Lee",
+      "email": "david.lee@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "employee",
+      "date_joined": "2025-01-10T08:22:11.123456Z"
+    }
+  },
+  {
+    "model": "proj_backend.userdata",
+    "pk": 5,
+    "fields": {
+      "name": "Eva Green",
+      "email": "eva.green@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "employee",
+      "date_joined": "2025-01-12T09:00:45.654321Z"
+    }
+  },
+  {
+    "model": "proj_backend.userdata",
+    "pk": 6,
+    "fields": {
+      "name": "Frank White",
+      "email": "frank.white@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "employee",
+      "date_joined": "2025-01-15T17:34:21.111222Z"
+    }
+  },
+  {
+    "model": "proj_backend.userdata",
+    "pk": 7,
+    "fields": {
+      "name": "Grace Kelly",
+      "email": "grace.kelly@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "employee",
+      "date_joined": "2025-01-18T20:15:33.555111Z"
+    }
+  },
+  {
+    "model": "proj_backend.userdata",
+    "pk": 8,
+    "fields": {
+      "name": "Hank Miller",
+      "email": "hank.miller@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "employee",
+      "date_joined": "2025-01-20T13:50:00.000000Z"
+    }
+  },
+  {
+    "model": "proj_backend.userdata",
+    "pk": 9,
+    "fields": {
+      "name": "Isla Brown",
+      "email": "isla.brown@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "employee",
+      "date_joined": "2025-01-25T10:05:55.999888Z"
+    }
+  },
+  {
+    "model": "proj_backend.userdata",
+    "pk": 10,
+    "fields": {
+      "name": "Jack Wilson",
+      "email": "jack.wilson@example.com",
+      "password": "pbkdf2_sha256$720000$b78GNoLIuKqoH5eTMk4kiV$3cGPGf4EcpXLOCDQpiDsVlaQaDEOrz1ffXLDR1gMZAo=",
+      "is_staff": false,
+      "type": "employee",
+      "date_joined": "2025-01-28T14:20:45.222333Z"
+    }
+  }
+]

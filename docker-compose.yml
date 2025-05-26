@@ -1,0 +1,321 @@
+
+
+version: '3.8'
+
+services:
+  agent:
+    image: portainer/agent:2.11.1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - ems_agent_network
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ems
+      MYSQL_USER: ems_user
+      MYSQL_PASSWORD: ems_password
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --bind-address=0.0.0.0
+      --skip-host-cache
+      --skip-name-resolve
+    ports:
+      - "3306:3306"
+    networks:
+      - ems_agent_network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1000M
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+
+  portainer:
+    image: portainer/portainer-ce:2.11.1
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    ports:
+      - "9443:9443"
+      - "9000:9000"
+      - "8081:8000"
+    volumes:
+      - portainer_data:/data
+    networks:
+      - ems_agent_network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    depends_on:
+      - db
+    networks:
+      - ems_agent_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 200M
+      restart_policy:
+        condition: on-failure
+
+  # business-module:
+  #   image: razvim23/business-module-image:latest
+  #   command: python manage.py runserver 0.0.0.0:8002
+  #   ports:
+  #     - "8002:8002"
+  #   networks:
+  #     - ems_agent_network
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.5'
+  #         memory: 1000M
+  #     restart_policy:
+  #       condition: on-failure
+
+  payments-module:
+    image: anacicoare/payments-module-image:latest
+    command: >
+      sh -c "
+      python manage.py runserver 0.0.0.0:8003
+      "
+    ports:
+      - "8003:8003"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=ems
+      - DB_USER=root
+      - DB_PASSWORD=root
+    networks:
+      - ems_agent_network
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1000M
+      restart_policy:
+        condition: on-failure
+
+  tasks-module:
+    image: anacicoare/tasks-module-image:latest
+    ports:
+      - "8004:8004"
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8004
+      "
+    environment:
+      - DB_HOST=db
+      - DB_NAME=ems
+      - DB_USER=root
+      - DB_PASSWORD=root
+    depends_on:
+      - db
+    networks:
+      - ems_agent_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1000M
+      restart_policy:
+        condition: on-failure
+
+  teams-module:
+    image: anacicoare/teams-module-image:latest
+    ports:
+      - "8005:8005"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=ems
+      - DB_USER=root
+      - DB_PASSWORD=root
+    command: python manage.py runserver 0.0.0.0:8005
+    depends_on:
+      - db
+      - tasks-module
+    networks:
+      - ems_agent_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1000M
+      restart_policy:
+        condition: on-failure
+
+  business-module:
+    image: anacicoare/business-module-image:1.0.1
+    command: python manage.py runserver 0.0.0.0:8002
+    ports:
+      - "8002:8002"
+    # volumes:
+    #   - ./business-module:/app
+    networks:
+      - ems_agent_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1000M
+      restart_policy:
+        condition: on-failure
+
+  frontend:
+    image: anacicoare/frontend-image:latest
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - REACT_APP_API_URL=http://kong:8000
+    depends_on:
+      - kong
+      - business-module
+      - payments-module
+      - tasks-module
+      - teams-module
+    networks:
+      - ems_agent_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1100M
+      restart_policy:
+        condition: on-failure
+
+  kong:
+    image: kong:latest
+    volumes:
+      - ./kong.yml:/usr/local/kong/declarative/kong.yml
+    environment:
+      KONG_DATABASE: 'off'
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+    ports:
+      - "8001:8001"  # Admin API
+      - "8000:8000"  # Proxy
+      - "8443:8443"  # Proxy (SSL)
+      - "8444:8444"  # Admin API (SSL)
+    networks:
+      - ems_agent_network
+    deploy:
+      placement:
+        constraints: [node.role == manager]  # Runs only on manager to avoid conflicts
+      restart_policy:
+        condition: on-failure
+    
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - ems_agent_network
+      - monitoring-network
+    ports:
+      - "9090:9090"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - monitoring-network
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    volumes:
+      - /etc/machine-id:/etc/machine-id:ro
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/kmsg:/dev/kmsg:ro
+    networks:
+      - monitoring-network
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_INSTALL_PLUGINS: grafana-piechart-panel,grafana-worldmap-panel
+    networks:
+      - ems_agent_network
+      - monitoring-network
+    ports:
+      - "3000:3000"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+
+networks:
+  ems_agent_network:
+    driver: overlay
+    attachable: true
+
+  monitoring-network:
+    external: true
+
+volumes:
+  db_data:
+  portainer_data:
+  prometheus_data:
+  grafana_data:

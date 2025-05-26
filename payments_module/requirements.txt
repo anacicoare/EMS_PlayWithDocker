@@ -1,0 +1,8 @@
+django-cors-headers
+mysqlclient
+Django~=5.0.4
+djangorestframework~=3.15.1
+djangorestframework-simplejwt
+cloudinary
+django-cloudinary-storage
+prometheus_client
